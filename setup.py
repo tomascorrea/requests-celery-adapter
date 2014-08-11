@@ -3,8 +3,8 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-# with open(os.path.join(here, 'README.txt')) as f:
-#     README = f.read()
+with open(os.path.join(here, 'README.md')) as f:
+  README = f.read()
 # with open(os.path.join(here, 'CHANGES.txt')) as f:
 #     CHANGES = f.read()
 
@@ -34,9 +34,10 @@ setup(name='celery_adapter',
       zip_safe=False,
       test_suite='requests-celery-adapter',
       install_requires=requires,
-      entry_points = {
-        'console_scripts': [
-                            'cli-celery=celery_adapter:cli',
-                           ],
-      }
-      )
+      entry_points = """\
+      [paste.app_factory]
+      main = rca:main
+      [console_scripts]
+      cli-celery = rca.scripts.cli:send_task
+      """,
+)
