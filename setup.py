@@ -3,10 +3,10 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'README.txt')) as f:
-    README = f.read()
-with open(os.path.join(here, 'CHANGES.txt')) as f:
-    CHANGES = f.read()
+# with open(os.path.join(here, 'README.txt')) as f:
+#     README = f.read()
+# with open(os.path.join(here, 'CHANGES.txt')) as f:
+#     CHANGES = f.read()
 
 requires = [
             'kombu',
@@ -15,10 +15,10 @@ requires = [
             'boto',
     ]
 
-setup(name='celery-adapter',
+setup(name='celery_adapter',
       version='0.1',
-      description='Rating Analytics',
-      long_description=README + '\n\n' + CHANGES,
+      description='Rating Analytics Celery Client',
+      # long_description=README + '\n\n' + CHANGES,
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Celery",
@@ -32,6 +32,11 @@ setup(name='celery-adapter',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      test_suite='celery-adapter',
+      test_suite='requests-celery-adapter',
       install_requires=requires,
+      entry_points = {
+        'console_scripts': [
+                            'cli-celery=celery_adapter:cli',
+                           ],
+      }
       )
