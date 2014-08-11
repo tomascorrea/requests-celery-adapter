@@ -36,7 +36,7 @@ class CeleryAdapter(BaseAdapter):
     def send(self, request, **kwargs):
 
         with Connection(request.url) as conn:
-            
+
             simple_queue = conn.SimpleQueue(
                 request.headers.get('queue', 'default')
             )
@@ -47,7 +47,7 @@ class CeleryAdapter(BaseAdapter):
                        "kwargs": json.loads(request.body),
                        "retries": request.headers.get('retries', 0),
                        "eta": datetime.datetime.now().isoformat()}
-            
+
             simple_queue.put(message)
             simple_queue.close()
 
@@ -57,10 +57,9 @@ class CeleryAdapter(BaseAdapter):
 
 
 class AmqpCeleryAdapter(CeleryAdapter):
-
     pass
 
-
-    
+class SQSCeleryAdapter(CeleryAdapter):
+    pass
 
 
