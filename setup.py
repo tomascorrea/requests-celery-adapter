@@ -5,8 +5,6 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.md')) as f:
   README = f.read()
-# with open(os.path.join(here, 'CHANGES.txt')) as f:
-#     CHANGES = f.read()
 
 requires = [
             'kombu',
@@ -38,6 +36,6 @@ setup(name='celery_adapter',
       [paste.app_factory]
       main = rca:main
       [console_scripts]
-      cli-celery = rca.scripts.cli:send_task
+      celery-send-task = rca.scripts.cli:send_task
       """,
 )
