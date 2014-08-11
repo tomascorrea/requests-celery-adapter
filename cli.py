@@ -10,14 +10,20 @@ from rca.adapters import AmqpCeleryAdapter
 @click.argument('url')
 @click.argument('task')
 @click.argument('queue')
-def send_task(url, task, queue):
+@click.option('--params')
+def send_task(url, task, queue, params):
 
     s = requests.Session()
     s.mount('amqp://', AmqpCeleryAdapter())
 
     headers = {'task': task, 'queue': queue}
 
-    s.post(url, headers=headers, data=json.dumps({'ola': 'ola'}))
+    if params:
+        params = json.dumps(json.loads(params))
+    else:
+        params = json.dumps({})
+
+    s.post(url, headers=headers, data=params)
 
 
 if __name__ == '__main__':

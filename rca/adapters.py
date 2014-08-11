@@ -46,7 +46,7 @@ class CeleryAdapter(BaseAdapter):
                        "args": [],
                        "kwargs": json.loads(request.body),
                        "retries": request.headers.get('retries', 0),
-                       "eta": datetime.datetime.utcnow().isoformat()}
+                       "eta": datetime.datetime.now().isoformat()}
             
             simple_queue.put(message)
             simple_queue.close()
