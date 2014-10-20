@@ -38,7 +38,6 @@ class CeleryAdapter(BaseAdapter):
         with Connection(request.url) as conn:
             return self._send(conn, request, **kwargs)
 
-
     def _send(self, conn, request, **kwargs):
 
         simple_queue = conn.SimpleQueue(
@@ -60,14 +59,18 @@ class CeleryAdapter(BaseAdapter):
         return build_response(request, data, 200, 'ascii')
 
 
-
 class AmqpCeleryAdapter(CeleryAdapter):
     pass
+
 
 class SQSCeleryAdapter(CeleryAdapter):
     def send(self, request, **kwargs):
         with BrokerConnection(request.url, transport_options = {'region': 'sa-east-1'}) as conn:
             return self._send(conn, request, **kwargs)
+
+
+class RedisCeleryAdapter(CeleryAdapter):
+    pass
 
 
 

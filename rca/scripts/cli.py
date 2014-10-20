@@ -3,7 +3,7 @@
 import json
 import click
 import requests
-from rca.adapters import AmqpCeleryAdapter, SQSCeleryAdapter
+from rca.adapters import AmqpCeleryAdapter, SQSCeleryAdapter, RedisCeleryAdapter
 
 
 @click.command()
@@ -16,6 +16,7 @@ def send_task(url, task, queue, params):
     s = requests.Session()
     s.mount('amqp://', AmqpCeleryAdapter())
     s.mount('sqs://', SQSCeleryAdapter())
+    s.mount('redis://', RedisCeleryAdapter())
 
     headers = {'task': task, 'queue': queue}
 
