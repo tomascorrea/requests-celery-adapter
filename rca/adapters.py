@@ -7,6 +7,7 @@ from requests.compat import urlparse, StringIO
 from requests.adapters import BaseAdapter
 from requests.hooks import dispatch_hook
 from kombu import Connection, Exchange, Queue, BrokerConnection
+from kombu.pools import connections
 import datetime
 
 
@@ -35,7 +36,8 @@ class CeleryAdapter(BaseAdapter):
 
     def send(self, request, **kwargs):
 
-        with Connection(request.url) as conn:
+        connection = Connection(request.url)
+        with connections[connection].acquire(block=True) as conn:
             return self._send(conn, request, **kwargs)
 
     def _send(self, conn, request, **kwargs):
