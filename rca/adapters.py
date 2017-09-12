@@ -9,6 +9,7 @@ from requests.hooks import dispatch_hook
 from kombu import Connection, Exchange, Queue, BrokerConnection
 from kombu.pools import connections
 import datetime
+import six
 
 
 def build_response(request, data, code, encoding):
@@ -18,7 +19,7 @@ def build_response(request, data, code, encoding):
 
     # Fill in some useful fields.
 
-    raw = StringIO()
+    raw = six.BytesIO()
     raw.write(data)
     raw.seek(0)
 
@@ -56,7 +57,7 @@ class CeleryAdapter(BaseAdapter):
         simple_queue.put(message)
         simple_queue.close()
 
-        data = json.dumps({})
+        data = six.b(json.dumps({}))
 
         return build_response(request, data, 200, 'ascii')
 
