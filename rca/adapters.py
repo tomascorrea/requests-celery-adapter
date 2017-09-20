@@ -3,13 +3,14 @@
 import uuid
 import json
 from requests import Response
-from requests.compat import urlparse, StringIO
 from requests.adapters import BaseAdapter
 from requests.hooks import dispatch_hook
-from kombu import Connection, Exchange, Queue, BrokerConnection
+from kombu import Connection, BrokerConnection
 from kombu.pools import connections
 import datetime
 import six
+
+from rca.url_parser import Parser
 
 
 def build_response(request, data, code, encoding):
@@ -36,22 +37,22 @@ def build_response(request, data, code, encoding):
 class CeleryAdapter(BaseAdapter):
 
     def send(self, request, **kwargs):
+        parsed_url = Parser(request.url)
 
-        connection = Connection(request.url)
+        connection = Connection(parsed_url.broker_url)
         with connections[connection].acquire(block=True) as conn:
-            return self._send(conn, request, **kwargs)
+            return self._send(conn, request, parsed_url, **kwargs)
 
-    def _send(self, conn, request, **kwargs):
+    def _send(self, conn, request, parsed_url, **kwargs):
 
         simple_queue = conn.SimpleQueue(
-            request.headers.get('queue', 'default')
+            parsed_url.queue
         )
 
         message = {"id": uuid.uuid4().hex,
-                   "task": request.headers['task'],
+                   "task": parsed_url.task,
                    "args": [],
                    "kwargs": json.loads(request.body),
-                   "retries": request.headers.get('retries', 0),
                    "eta": datetime.datetime.now().isoformat()}
 
         simple_queue.put(message)
@@ -68,8 +69,9 @@ class AmqpCeleryAdapter(CeleryAdapter):
 
 class SQSCeleryAdapter(CeleryAdapter):
     def send(self, request, **kwargs):
-        with BrokerConnection(request.url, transport_options = {'region': 'sa-east-1'}) as conn:
-            return self._send(conn, request, **kwargs)
+        parsed_url = Parser(request.url)
+        with BrokerConnection(parsed_url.broker_url, transport_options={'region': 'sa-east-1'}) as conn:
+            return self._send(conn, request, parsed_url, **kwargs)
 
 
 class RedisCeleryAdapter(CeleryAdapter):
