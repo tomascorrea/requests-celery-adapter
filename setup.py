@@ -8,7 +8,8 @@ with open(os.path.join(here, 'README.md')) as f:
 
 requires = ['kombu==3.0.26',
             'requests>=2.3.0',
-            'click==3.1'
+            'click==3.1',
+            'six==1.10.0'
             ]
 
 setup(name='celery_adapter',
