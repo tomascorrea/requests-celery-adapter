@@ -18,19 +18,15 @@ extras_require = {
     'cli': ['click==3.1']
 }
 
-setup(name='celery_adapter',
+setup(name='requests-celery-adapters',
       version='0.1',
-      description='Rating Analytics Celery Client',
+      description='Requests lib adapters to send Celery messages (tasks)',
       # long_description=README + '\n\n' + CHANGES,
-      classifiers=["Programming Language :: Python",
-                   "Framework :: Celery",
-                   "Topic :: Internet :: Worker",
-                   "Topic :: Internet :: Worker :: CLI :: Application",
-                   ],
+      classifiers=["Programming Language :: Python"],
       author='Diog Fernandes',
       author_email='diogo@geru.com.br',
       url='',
-      keywords='worker sqs cli celery',
+      keywords='worker celery',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
