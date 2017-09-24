@@ -2,10 +2,6 @@ import os
 
 from setuptools import setup, find_packages
 
-here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'README.md')) as f:
-    README = f.read()
-
 requires = ['kombu==3.0.26',
             'requests>=2.3.0',
             'six==1.10.0'
@@ -19,7 +15,7 @@ extras_require = {
 }
 
 setup(name='requests-celery-adapters',
-      version='2.0.1',
+      version='2.0.2',
       description='Requests lib adapters to send Celery messages (tasks)',
       # long_description=README + '\n\n' + CHANGES,
       classifiers=["Programming Language :: Python"],
