@@ -8,9 +8,15 @@ with open(os.path.join(here, 'README.md')) as f:
 
 requires = ['kombu==3.0.26',
             'requests>=2.3.0',
-            'click==3.1',
-            'boto==2.30.0',
+            'six==1.10.0'
             ]
+
+extras_require = {
+    'test': [
+        'pytest>=3.2.2'
+    ],
+    'cli': ['click==3.1']
+}
 
 setup(name='celery_adapter',
       version='0.1',
@@ -30,6 +36,7 @@ setup(name='celery_adapter',
       zip_safe=False,
       test_suite='requests-celery-adapter',
       install_requires=requires,
+      extras_require=extras_require,
       entry_points="""\
       [paste.app_factory]
       main = rca:main
