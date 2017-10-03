@@ -3,6 +3,23 @@ import six
 import posixpath
 
 
+class LegacyParser(object):
+    def __init__(self, request):
+        self.request = request
+
+    @property
+    def queue(self):
+        return self.request.headers.get('queue', 'default')
+
+    @property
+    def task(self):
+        return self.request.headers['task']
+
+    @property
+    def broker_url(self):
+        return self.request.url
+
+
 class Parser(object):
     def __init__(self, url):
         """

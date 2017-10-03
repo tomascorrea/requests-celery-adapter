@@ -10,7 +10,7 @@ from kombu.pools import connections
 import datetime
 import six
 
-from rca.url_parser import Parser
+from rca.url_parser import Parser, LegacyParser
 
 
 def build_response(request, data, code, encoding):
@@ -35,10 +35,16 @@ def build_response(request, data, code, encoding):
 
 
 class CeleryAdapter(BaseAdapter):
+    @staticmethod
+    def __get_parsed_url(request):
+        #  backward compatibility check to support version 1.0.0 API
+        #  This should be removed at some time.
+        if 'task' in request.headers:
+            return LegacyParser(request)
+        return Parser(request.url)
 
     def send(self, request, **kwargs):
-        parsed_url = Parser(request.url)
-
+        parsed_url = self.__get_parsed_url(request)
         connection = Connection(parsed_url.broker_url)
         with connections[connection].acquire(block=True) as conn:
             return self._send(conn, request, parsed_url, **kwargs)
@@ -69,7 +75,7 @@ class AmqpCeleryAdapter(CeleryAdapter):
 
 class SQSCeleryAdapter(CeleryAdapter):
     def send(self, request, **kwargs):
-        parsed_url = Parser(request.url)
+        parsed_url = self.__get_parsed_url(request)
         with BrokerConnection(parsed_url.broker_url, transport_options={'region': 'sa-east-1'}) as conn:
             return self._send(conn, request, parsed_url, **kwargs)
 

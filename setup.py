@@ -2,20 +2,22 @@ import os
 
 from setuptools import setup, find_packages
 
-requires = ['kombu==3.0.26',
+requires = ['kombu>=3.0.30',
             'requests>=2.3.0',
             'six==1.10.0'
             ]
 
 extras_require = {
     'test': [
-        'pytest>=3.2.2'
+        'pytest>=3.2.2',
+        'mock>=2.0.0',
+        'redis-2.10.6'
     ],
     'cli': ['click==3.1']
 }
 
 setup(name='requests-celery-adapters',
-      version='2.0.3',
+      version='2.0.4',
       description='Requests lib adapters to send Celery messages (tasks)',
       # long_description=README + '\n\n' + CHANGES,
       classifiers=["Programming Language :: Python"],
