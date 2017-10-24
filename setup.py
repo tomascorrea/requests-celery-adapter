@@ -17,11 +17,11 @@ extras_require = {
 }
 
 setup(name='requests-celery-adapters',
-      version='2.0.4',
+      version='2.0.5',
       description='Requests lib adapters to send Celery messages (tasks)',
       # long_description=README + '\n\n' + CHANGES,
       classifiers=["Programming Language :: Python"],
-      author='Diog Fernandes',
+      author='Diogo Fernandes',
       author_email='diogo@geru.com.br',
       url='',
       keywords='worker celery',
