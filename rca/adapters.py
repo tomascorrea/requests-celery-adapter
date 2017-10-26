@@ -58,7 +58,7 @@ class CeleryAdapter(BaseAdapter):
         message = {"id": uuid.uuid4().hex,
                    "task": parsed_url.task,
                    "args": [],
-                   "kwargs": json.loads(request.body),
+                   "kwargs": json.loads(request.body.decode('utf-8')),
                    "eta": datetime.datetime.now().isoformat()}
 
         simple_queue.put(message)
