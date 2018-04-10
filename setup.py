@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 requires = ['kombu>=3.0.30',
-            'requests==2.18.4',
+            'requests==2.11.1',
             'six>=1.11.0'
             ]
 
