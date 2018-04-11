@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 requires = ['kombu>=3.0.30',
-            'requests==2.18.4',
+            'requests>=2.11.1',
             'six>=1.11.0'
             ]
 
@@ -12,16 +12,16 @@ extras_require = {
         'redis>=2.10.6',
         'httpretty>=0.8.14',
     ],
-    'cli': ['click==3.1']
+    'cli': ['click>=3.1']
 }
 
 setup(name='requests-celery-adapters',
-      version='2.0.8',
+      version='2.0.9',
       description='Requests lib adapters to send Celery messages (tasks)',
       # long_description=README + '\n\n' + CHANGES,
       classifiers=["Programming Language :: Python"],
-      author='Diogo Fernandes',
-      author_email='diogo@geru.com.br',
+      author='Tomas Correa',
+      author_email='tomas@geru.com.br',
       url='',
       keywords='worker celery',
       packages=find_packages(),
