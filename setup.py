@@ -16,7 +16,7 @@ extras_require = {
 }
 
 setup(name='requests-celery-adapters',
-      version='2.0.9',
+      version='2.0.10',
       description='Requests lib adapters to send Celery messages (tasks)',
       # long_description=README + '\n\n' + CHANGES,
       classifiers=["Programming Language :: Python"],

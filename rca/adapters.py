@@ -9,9 +9,10 @@ from kombu import Connection, BrokerConnection
 from kombu.pools import connections
 import datetime
 import six
+import signal
 
 from rca.url_parser import Parser, LegacyParser
-
+from rca.exceptions import FirstConnectionTimeout
 
 def build_response(request, data, code, encoding):
     response = Response()
@@ -34,7 +35,18 @@ def build_response(request, data, code, encoding):
     return response
 
 
+def timeout_handler(signum, frame):
+    raise FirstConnectionTimeout("First Connection to Broker has timed out.")
+
+
+signal.signal(signal.SIGALRM, timeout_handler)
+
+
 class CeleryAdapter(BaseAdapter):
+    def __init__(self, *args, first_connection_timeout=None, **kwargs):
+        self.first_connection_timeout = first_connection_timeout
+        super(CeleryAdapter, self).__init__(*args, **kwargs)
+
     @staticmethod
     def __get_parsed_url(request):
         #  backward compatibility check to support version 1.0.0 API
@@ -50,6 +62,10 @@ class CeleryAdapter(BaseAdapter):
             return self._send(conn, request, parsed_url, **kwargs)
 
     def _send(self, conn, request, parsed_url, **kwargs):
+
+        if self.first_connection_timeout:
+            signal.alarm(self.first_connection_timeout)
+            self.first_connection_timeout = None
 
         simple_queue = conn.SimpleQueue(
             parsed_url.queue
@@ -84,7 +100,3 @@ class SQSCeleryAdapter(CeleryAdapter):
 
 class RedisCeleryAdapter(CeleryAdapter):
     pass
-
-
-
-
