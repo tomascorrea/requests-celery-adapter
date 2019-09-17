@@ -35,16 +35,9 @@ def build_response(request, data, code, encoding):
     return response
 
 
-def timeout_handler(signum, frame):
-    raise FirstConnectionTimeout("First Connection to Broker has timed out.")
-
-
-signal.signal(signal.SIGALRM, timeout_handler)
-
-
 class CeleryAdapter(BaseAdapter):
-    def __init__(self, *args, first_connection_timeout=None, **kwargs):
-        self.first_connection_timeout = first_connection_timeout
+    def __init__(self, *args, **kwargs):
+        self.first_connection_timeout = kwargs.pop('first_connection_timeout', None)
         super(CeleryAdapter, self).__init__(*args, **kwargs)
 
     @staticmethod
@@ -55,6 +48,9 @@ class CeleryAdapter(BaseAdapter):
             return LegacyParser(request)
         return Parser(request.url)
 
+    def _timeout_handler(self, signum, frame):
+        raise FirstConnectionTimeout("First Connection to Broker has timed out.")
+
     def send(self, request, **kwargs):
         parsed_url = self.__get_parsed_url(request)
         connection = Connection(parsed_url.broker_url)
@@ -63,13 +59,22 @@ class CeleryAdapter(BaseAdapter):
 
     def _send(self, conn, request, parsed_url, **kwargs):
 
+        # Setup an alarm timeout if first_connection_timeout is set
+        previous_handler = None
         if self.first_connection_timeout:
+            previous_handler = signal.signal(signal.SIGALRM, self._timeout_handler)
             signal.alarm(self.first_connection_timeout)
             self.first_connection_timeout = None
 
         simple_queue = conn.SimpleQueue(
             parsed_url.queue
         )
+
+        # If alarm was set, remove it and set original handler
+        if previous_handler is not None:
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, previous_handler)
+
 
         message = {"id": uuid.uuid4().hex,
                    "task": parsed_url.task,
