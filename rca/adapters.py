@@ -1,15 +1,17 @@
 # -*- encoding: utf-8 -*-
 
-import uuid
 import json
+import signal
+import six
+import time
+import uuid
+
+from datetime import datetime
 from requests import Response
 from requests.adapters import BaseAdapter
 from requests.hooks import dispatch_hook
 from kombu import Connection, BrokerConnection
 from kombu.pools import connections
-import datetime
-import six
-import signal
 
 from rca.url_parser import Parser, LegacyParser
 from rca.exceptions import FirstConnectionTimeout
@@ -82,7 +84,8 @@ class CeleryAdapter(BaseAdapter):
                    "kwargs": json.loads(
                        request.body if isinstance(request.body, str) else request.body.decode('utf-8')
                    ),
-                   "eta": datetime.datetime.now().isoformat()}
+                   'sent': time.time(),
+                   "eta": datetime.now().isoformat()}
 
         simple_queue.put(message)
         simple_queue.close()
