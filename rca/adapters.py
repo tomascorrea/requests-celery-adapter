@@ -78,14 +78,15 @@ class CeleryAdapter(BaseAdapter):
             signal.signal(signal.SIGALRM, previous_handler)
 
 
-        message = {"id": uuid.uuid4().hex,
-                   "task": parsed_url.task,
-                   "args": [],
-                   "kwargs": json.loads(
-                       request.body if isinstance(request.body, str) else request.body.decode('utf-8')
-                   ),
-                   'sent': time.time(),
-                   "eta": datetime.now().isoformat()}
+        message = {
+            "id": uuid.uuid4().hex,
+            "task": parsed_url.task,
+            "args": [],
+            "kwargs": json.loads(
+                request.body if isinstance(
+                    request.body, str) else request.body.decode('utf-8')
+            ),
+        }
 
         simple_queue.put(message)
         simple_queue.close()
